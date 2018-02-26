@@ -6,7 +6,7 @@
 // @author      dang
 // @homepage    https://github.com/dang-nabbit/gos-lucky-spider/gos-lucky-spider.user.js
 // @description Scrape data from all the users in the clan members page
-// @version     1.1
+// @version     2.0
 // @icon        https://www.google.com/s2/favicons?domain=https://www.gatesofsurvival.com/
 // @downloadURL https://github.com/dang-nabbit/gos-lucky-spider/raw/master/gos-lucky-spider.user.js
 // @grant       none
@@ -39,15 +39,14 @@ var defaultEyes = {
         urlRegEx: /^view_members\.php/i,
         callback: skitterNext,
         skittering: false,
-        selector: '#page input[type="image"]',
+        selector: '.text_button',
         length: 0,
         index: 0,
         data: []
     },
     grabData: {
         urlRegEx: /^user3\.php/i,
-        callback: grabData,
-        grabbing: false
+        callback: grabData
     }
 };
 var spiderEyes = spiderEyes || defaultEyes;
@@ -237,39 +236,37 @@ function skitterNext() {
 
     if (skitter.skittering === true) {
         log('skittering === true, opening user at index ' + skitter.index + '.', 'skitterNext');
-        document.querySelectorAll(skitter.selector)[skitter.index].click();
+        $.ajax({
+            url: document.querySelectorAll(skitter.selector)[skitter.index].form.action
+        }).done(grabData);
     } else {
         log('skittering === false, the spider rests.', 'skitterNext');
     }
 }
 
-function grabData() {
+function grabData(html) {
     var skitter = spiderEyes.skitter;
     var grabData = spiderEyes.grabData;
 
-    if (skitter.skittering === true) {
-        if (grabData.grabbing === false) {
-            log('skitter.skittering === true, grabbing data...', 'grabData');
+    log('skitter.skittering === true, grabbing data...', 'grabData');
 
-            grabData.grabbing = true;
-            skitter.data[skitter.index] = getData();
+    grabData.grabbing = true;
+    skitter.data[skitter.index] = getData(html);
 
-            skitter.index++;
+    skitter.index++;
 
-            log('data grabbed, returning to clan members page.', 'grabData');
-            document.querySelector('#return_to_clan_page').click();
-        } else {
-            log('grabbing === true, waiting to return to clan members page...', 'grabData');
-        }
-    } else {
-        log('skittering === false, the spider rests.', 'grabData');
-    }
+    log('data grabbed, returning to clan members page.', 'grabData');
+
+    updateSkitterBtnText($('#lucky-spider'));
+    $('#lucky-spider-data').val(spitData());
+    skitterNext();
 }
 
-function getData() {
-    var name = document.querySelector('#page center b').innerHTML;
+function getData(html) {
+    var page = $(html);
+    var name = page.find('b').first().text();
 
-    var textNodes = $("#page > center table[width='80%'] tr").children('*').contents();
+    var textNodes = page.find('table[width="80%"] tr').children('*').contents();
     var nodeCount = textNodes.length;
     var data = [name,,,];
 
@@ -293,7 +290,7 @@ function getData() {
         }
     }
 
-    $node = $("#page > center i");
+    $node = page.find('i');
     text = $node.first().text();
     if (text === 'Total Logins') {
         text = '';
