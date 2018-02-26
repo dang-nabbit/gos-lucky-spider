@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name        Gates of Survival - Lucky Spider
 // @namespace   https://www.gatesofsurvival.com/
-// @match       https://www.gatesofsurvival.com/game/index.php
+// @match       https://*.gatesofsurvival.com/*
+// @match       http://*.gatesofsurvival.com/*
 // @author      dang
 // @homepage    https://github.com/dang-nabbit/gos-lucky-spider/gos-lucky-spider.user.js
 // @description Scrape data from all the users in the clan members page
-// @version     1.0
+// @version     1.1
 // @icon        https://www.google.com/s2/favicons?domain=https://www.gatesofsurvival.com/
 // @downloadURL https://github.com/dang-nabbit/gos-lucky-spider/raw/master/gos-lucky-spider.user.js
 // @grant       none
