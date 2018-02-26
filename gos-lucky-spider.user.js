@@ -57,10 +57,10 @@ function initialize(keepData) {
     var skitter = JSON.parse(JSON.stringify(spiderEyes.skitter));
     spiderEyes = defaultEyes;
 
-    if (keepData === true) {
-        spiderEyes.skitter.length = skitter.length;
-        spiderEyes.skitter.index = skitter.index;
-        spiderEyes.skitter.data = skitter.data;
+    if (keepData !== true) {
+        spiderEyes.skitter.length = 0;
+        spiderEyes.skitter.index = 0;
+        spiderEyes.skitter.data = [];
     }
 
     openEyes();
@@ -170,6 +170,7 @@ function appendSkitterTextArea(spiderDiv) {
     var skitter = spiderEyes.skitter;
     var textarea = $('<textarea>');
     textarea.attr('id', 'lucky-spider-data');
+    textarea.attr('readonly', 'readonly');
     textarea.css({
         width: '100%',
         'font-size': '0.7em',
